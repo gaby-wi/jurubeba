@@ -1,5 +1,5 @@
-using BlazorApp1.Components;
-using BlazorApp1.configs;
+using AppWebExemplo.Components;
+using AppWebExemplo.Configs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,8 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-//mysql
-builder.Services.AddScoped<Conexoes>();
+// Configuração da Conexão com o Banco de Dados MYSQL
+builder.Services.AddScoped<Conexao>();
 
 var app = builder.Build();
 
