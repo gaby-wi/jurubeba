@@ -1,21 +1,60 @@
-using Microsoft.AspNetCore.Http.HttpResults;
+using AppWebExemplo.Configs;
+using AppWebExemplo.Models;
+using AppWebExemplo.Configs;
+using AppWebExemplo.Models;
 
-namespace AppWebExemplo.Models
+namespace AppWebExemplo.DAO
 {
-    public class Processo
+    public class ProcessoDAO
     {
-        public int Id { get; set; }
+        private readonly Conexao _conexao;
 
-        public string Numero { get; set; } = string.Empty;
+        public ProcessoDAO(Conexao conexao)
+        {
+            _conexao = conexao;
+        }
 
-        public DateOnly Data { get; set; }
+        public List<Processo> Listar()
+        {
+            try
+            {
+                var lista = new List<Processo>();
 
-        public string Interessado { get; set; } = string.Empty;
+                //Buscando e abrindo a Conexão com o banco de dados
+                using var con = _conexao.GetConnection();
 
-        public string Assunto { get; set; } = string.Empty;
+                string sql = "SELECT * FROM processos";
+                using var comando = con.CreateCommand();
+                comando.CommandText = sql;
 
-        public string Descricao { get; set; } = string.Empty;
+                using var leitor = comando.ExecuteReader();
 
-        public string Situacao { get; set; } = string.Empty;
+                while (leitor.Read())
+                {
+                    var processo = new Processo();
+                    processo.Id = leitor.GetInt32("id_pro");
+                    processo.Numero = leitor.GetString("numero_pro");
+                    processo.Interessado = leitor.GetString("interessado_pro");
+                    processo.Assunto = leitor.GetString("assunto_pro");
+                    processo.Descricao = leitor.GetString("descricao_pro");
+                    processo.Situacao = leitor.GetString("situacao_pro");
+
+                    //processo.Data = leitor["data_pro"];
+
+                    lista.Add(processo);
+                }
+
+                return lista;
+
+            }
+            catch
+
+            {
+                throw;
+            }
+
+
+        }
+
     }
 }
